@@ -4,6 +4,7 @@ from datetime import datetime
 from groq import Groq
 from dotenv import load_dotenv
 import questionary
+import pyperclip
 from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
@@ -42,7 +43,7 @@ def transcribe_audio(audio_file):
                     model="whisper-large-v3-turbo",
                     response_format="text"
                 )
-                
+            
             return transcription
         
         except Exception as e:
@@ -180,6 +181,13 @@ def main():
                         border_style="green"
                     )
                     console.print(panel)
+                    
+                    # Copia para o clipboard
+                    try:
+                        pyperclip.copy(text)
+                        console.print("[dim green]📋 Texto copiado para o clipboard![/dim green]")
+                    except Exception as clipboard_error:
+                        console.print(f"[dim yellow]⚠️ Não foi possível copiar para o clipboard: {clipboard_error}[/dim yellow]")
                     
                     save_transcription(selected_file, text)
                     questionary.press_any_key_to_continue("Pressione qualquer tecla para continuar...").ask()
