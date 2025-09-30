@@ -9,19 +9,18 @@ from rich.table import Table
 from rich.panel import Panel
 
 load_dotenv()
-
 client = Groq()
 console = Console()
 
-AUDIO_DIR = os.path.abspath("app/assets/audio")
-TRANSCRIPTIONS_FILE = os.path.abspath("app/assets/transcriptions.json")
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+AUDIO_DIR = os.path.join(SCRIPT_DIR, "assets", "audio")
+TRANSCRIPTIONS_FILE = os.path.join(SCRIPT_DIR, "assets", "transcriptions.json")
+
+os.makedirs(AUDIO_DIR, exist_ok=True)
+os.makedirs(os.path.dirname(TRANSCRIPTIONS_FILE), exist_ok=True)
 
 def get_audio_files():
     """Lista todos os arquivos de áudio na pasta assets/audio"""
-    if not os.path.exists(AUDIO_DIR):
-        os.makedirs(AUDIO_DIR)
-        return []
-    
     audio_extensions = ['.wav', '.mp3', '.m4a', '.flac', '.ogg']
     files = []
     
@@ -93,10 +92,10 @@ def show_transcriptions():
     table.add_column("Prévia do Texto", style="green")
     
     for i, trans in enumerate(transcriptions, 1):
-        preview = trans['texto'][:80] + "..." if len(trans['texto']) > 80 else trans['texto']
+        preview = trans['text'][:80] + "..." if len(trans['text']) > 80 else trans['text']
         table.add_row(
             str(i),
-            trans['arquivo'],
+            trans['archive'],
             trans['data'],
             preview
         )
